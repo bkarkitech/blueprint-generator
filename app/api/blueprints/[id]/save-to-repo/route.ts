@@ -102,17 +102,19 @@ export async function POST(
     // Initialize GitHub API client
     const github = new GitHubAPIClient(process.env.GITHUB_TOKEN);
 
-    const tokenDebug = process.env.GITHUB_TOKEN
-      ? `Token length: ${process.env.GITHUB_TOKEN.length}, starts with: ${process.env.GITHUB_TOKEN.substring(0, 4)}...`
-      : "No token found";
+    if (process.env.NODE_ENV !== 'production') {
+      const tokenDebug = process.env.GITHUB_TOKEN
+        ? `Token length: ${process.env.GITHUB_TOKEN.length}, starts with: ${process.env.GITHUB_TOKEN.substring(0, 4)}...`
+        : "No token found";
 
-    console.log(`GitHub token info:`, tokenDebug);
-    console.log(`Attempting to save blueprint to GitHub:`, {
-      owner: repoInfo.owner,
-      repo: repoInfo.repo,
-      path: filePath,
-      contentLength: content.length,
-    });
+      console.log(`GitHub token info:`, tokenDebug);
+      console.log(`Attempting to save blueprint to GitHub:`, {
+        owner: repoInfo.owner,
+        repo: repoInfo.repo,
+        path: filePath,
+        contentLength: content.length,
+      });
+    }
 
     // Try to write file
     const result = await github.writeFile(
@@ -124,10 +126,12 @@ export async function POST(
       "main"
     );
 
-    console.log(`Successfully saved blueprint to GitHub:`, {
-      sha: result.sha,
-      path: result.path,
-    });
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Successfully saved blueprint to GitHub:`, {
+        sha: result.sha,
+        path: result.path,
+      });
+    }
 
     const fileUrl = `https://github.com/${repoInfo.owner}/${repoInfo.repo}/blob/main/${filePath}`;
 
