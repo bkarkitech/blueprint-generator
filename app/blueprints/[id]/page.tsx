@@ -13,6 +13,7 @@ export default function BlueprintChatPage() {
   const searchParams = useSearchParams()
   const blueprintId = typeof params.id === 'string' ? params.id : ''
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const [repos, setRepos] = useState<string[]>([])
   const [messages, setMessages] = useState<
@@ -30,6 +31,10 @@ export default function BlueprintChatPage() {
     message: string
     type: 'success' | 'error'
   } | null>(null)
+  // Track which message index should show diagram (persistent across messages)
+  const [showDiagramForMessageIndex, setShowDiagramForMessageIndex] = useState<
+    number | null
+  >(null)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -56,6 +61,9 @@ export default function BlueprintChatPage() {
     setInput('')
     setLoading(true)
 
+    // Create a new abort controller for this request
+    abortControllerRef.current = new AbortController()
+
     try {
       const response = await fetch(`/api/blueprints/${blueprintId}/chat`, {
         method: 'POST',
@@ -64,6 +72,7 @@ export default function BlueprintChatPage() {
           messages: newMessages,
           repos: repos,
         }),
+        signal: abortControllerRef.current.signal,
       })
 
       if (!response.ok) {
@@ -99,6 +108,11 @@ export default function BlueprintChatPage() {
         setMessages(updatedMessages)
       }
     } catch (error: any) {
+      // Don't show error message if user intentionally stopped the response
+      if (error.name === 'AbortError') {
+        // Just keep the partial message that was already streamed
+        return
+      }
       const errorMessage = error.message || 'Failed to get response'
       setMessages([
         ...newMessages,
@@ -108,6 +122,13 @@ export default function BlueprintChatPage() {
         console.error('Error:', error)
       }
     } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
       setLoading(false)
     }
   }
@@ -189,6 +210,29 @@ export default function BlueprintChatPage() {
   const handleSaveToRepoError = (message: string) => {
     setNotification({ message, type: 'error' })
     setTimeout(() => setNotification(null), 5000)
+  }
+
+  const handleFixDiagram = (diagramCode: string) => {
+    // This message asks LLM to fix ONLY the diagram, not the entire response
+    // Include the broken diagram code so LLM knows exactly what to fix
+    const fixMessage = `I noticed the diagram you generated has invalid Mermaid syntax. Here's the broken diagram:
+
+\`\`\`mermaid
+${diagramCode}
+\`\`\`
+
+Please generate a corrected version of this ONLY diagram (in a single \`\`\`mermaid code block) that shows the same architecture/concept but with valid Mermaid syntax. Don't regenerate anything else, just provide the corrected diagram.`
+    setInput(fixMessage)
+    // Scroll to input for user visibility and focus
+    setTimeout(() => {
+      const inputElement = document.querySelector(
+        'input[type="text"]'
+      ) as HTMLInputElement
+      if (inputElement) {
+        inputElement.focus()
+        inputElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }, 100)
   }
 
   return (
@@ -632,6 +676,11 @@ export default function BlueprintChatPage() {
                               <MermaidDiagram
                                 chart={String(children).replace(/\n$/, '')}
                                 isComplete={!loading}
+                                onFixDiagram={handleFixDiagram}
+                                showDiagram={showDiagramForMessageIndex === i}
+                                onShowDiagramChange={(show) =>
+                                  setShowDiagramForMessageIndex(show ? i : null)
+                                }
                               />
                             )
                           }
@@ -785,20 +834,19 @@ export default function BlueprintChatPage() {
                   }}
                 />
                 <button
-                  onClick={handleSend}
-                  disabled={loading}
+                  onClick={loading ? handleStop : handleSend}
                   style={{
                     padding: '12px 24px',
-                    backgroundColor: loading ? '#ccc' : '#2196F3',
+                    backgroundColor: loading ? '#f44336' : '#2196F3',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '6px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
+                    cursor: 'pointer',
                     fontSize: '14px',
                     fontWeight: 500,
                   }}
                 >
-                  {loading ? 'Sending...' : 'Send'}
+                  {loading ? 'Stop' : 'Send'}
                 </button>
               </div>
             </div>

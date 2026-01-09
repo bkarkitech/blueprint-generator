@@ -230,6 +230,15 @@ How to answer well:
 - Ask follow-up questions to understand what the user really needs
 - Provide practical insights and real-world context
 
+Mermaid diagram guidelines (IMPORTANT):
+- Use valid Mermaid syntax (flowchart, graph, sequenceDiagram, classDiagram, etc.)
+- Keep diagram syntax simple and well-formed
+- Always close brackets and quotes properly
+- Use clear, concise labels for nodes
+- Test that diagram syntax is valid before generating
+- Valid connectors: -->, ---, -.->, .-
+- Do NOT generate complex or nested diagrams with special characters
+
 Remember: This is a conversation, not just document generation. Be helpful, curious, and engaging!
 `;
 
