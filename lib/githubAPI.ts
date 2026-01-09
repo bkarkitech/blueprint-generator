@@ -32,7 +32,7 @@ class GitHubAPIClient {
   private async request(
     endpoint: string,
     options: RequestInit = {}
-  ): Promise<any> {
+  ): Promise<Record<string, unknown>> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
       "Authorization": `token ${this.token}`,
@@ -55,7 +55,7 @@ class GitHubAPIClient {
     if (contentType?.includes("application/json")) {
       return response.json();
     }
-    return response.text();
+    return { text: await response.text() };
   }
 
   /**
@@ -68,21 +68,21 @@ class GitHubAPIClient {
     ref?: string
   ): Promise<GitHubFile> {
     const refParam = ref ? `?ref=${ref}` : "";
-    const data = await this.request(
+    const data = (await this.request(
       `/repos/${owner}/${repo}/contents/${path}${refParam}`
-    );
+    )) as Record<string, unknown>;
 
     if (data.type !== "file") {
       throw new Error(`${path} is not a file`);
     }
 
     // Decode base64 content
-    const content = Buffer.from(data.content, "base64").toString("utf-8");
+    const content = Buffer.from(data.content as string, "base64").toString("utf-8");
 
     return {
-      path: data.path,
+      path: data.path as string,
       content,
-      encoding: data.encoding,
+      encoding: data.encoding as string,
     };
   }
 
@@ -100,22 +100,22 @@ class GitHubAPIClient {
 
     // Get the tree SHA for the commit
     if (!ref || ref === "HEAD") {
-      const refData = await this.request(
+      const refData = (await this.request(
         `/repos/${owner}/${repo}/git/ref/heads/main`
       ).catch(() =>
         // Fallback to master if main doesn't exist
         this.request(`/repos/${owner}/${repo}/git/ref/heads/master`)
-      );
-      sha = refData.object.sha;
+      )) as Record<string, unknown>;
+      sha = (refData.object as Record<string, string>).sha;
     }
 
     const recursiveParam = recursive ? "?recursive=1" : "";
-    const data = await this.request(
+    const data = (await this.request(
       `/repos/${owner}/${repo}/git/trees/${sha}${recursiveParam}`
-    );
+    )) as Record<string, unknown>;
 
     // Filter by path if provided
-    let nodes: GitHubTreeNode[] = data.tree || [];
+    let nodes: GitHubTreeNode[] = (data.tree as GitHubTreeNode[]) || [];
     if (path) {
       const pathPrefix = path.endsWith("/") ? path : `${path}/`;
       nodes = nodes.filter((n) => n.path.startsWith(pathPrefix));
@@ -134,12 +134,12 @@ class GitHubAPIClient {
     limit: number = 10
   ): Promise<Array<{ path: string; matches: number }>> {
     const searchQuery = `${query} repo:${owner}/${repo}`;
-    const data = await this.request(
+    const data = (await this.request(
       `/search/code?q=${encodeURIComponent(searchQuery)}&per_page=${limit}`
-    );
+    )) as Record<string, unknown>;
 
-    return (data.items || []).map((item: any) => ({
-      path: item.path,
+    return ((data.items as Array<Record<string, unknown>>) || []).map((item) => ({
+      path: item.path as string,
       matches: item.name ? 1 : 0,
     }));
   }
@@ -147,7 +147,7 @@ class GitHubAPIClient {
   /**
    * Get repository metadata
    */
-  async getRepo(owner: string, repo: string): Promise<any> {
+  async getRepo(owner: string, repo: string): Promise<Record<string, unknown>> {
     return this.request(`/repos/${owner}/${repo}`);
   }
 

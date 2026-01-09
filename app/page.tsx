@@ -2,15 +2,18 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { normalizeRepository } from '@/lib/repoParser'
 
 export default function HomePage() {
   const [repos, setRepos] = useState<string[]>([''])
   const [blueprintId, setBlueprintId] = useState('')
+  const [error, setError] = useState<string>('')
 
   const handleRepoChange = (index: number, value: string) => {
     const newRepos = [...repos]
     newRepos[index] = value
     setRepos(newRepos)
+    setError('')
   }
 
   const addRepoField = () => {
@@ -22,15 +25,25 @@ export default function HomePage() {
   }
 
   const handleCreate = () => {
-    const validRepos = repos.filter((r) => r.trim())
+    const validRepos = repos
+      .filter((r) => r.trim())
+      .map((r) => normalizeRepository(r))
+
+    if (validRepos.some((r) => r === null)) {
+      setError(
+        'Invalid repository format. Use "owner/repo" or a GitHub URL (e.g., https://github.com/facebook/react)'
+      )
+      return
+    }
+
     if (validRepos.length === 0) {
-      alert('Please enter at least one repository')
+      setError('Please enter at least one repository')
       return
     }
 
     // Generate a blueprint ID and pass repos as query params
     const id = `blueprint-${Date.now()}`
-    const repoParam = encodeURIComponent(validRepos.join(','))
+    const repoParam = encodeURIComponent((validRepos as string[]).join(','))
     window.location.href = `/blueprints/${id}?repos=${repoParam}`
   }
 
@@ -57,7 +70,7 @@ export default function HomePage() {
 
         <div style={{ marginBottom: '16px' }}>
           <p style={{ fontSize: '13px', color: '#666', marginBottom: '12px' }}>
-            Enter repository names in the format:{' '}
+            Enter repository in{' '}
             <code
               style={{
                 backgroundColor: '#f0f0f0',
@@ -66,12 +79,32 @@ export default function HomePage() {
               }}
             >
               owner/repo
-            </code>
+            </code>{' '}
+            format or paste a GitHub URL:
           </p>
           <p style={{ fontSize: '13px', color: '#666', marginBottom: '16px' }}>
-            Example: facebook/react, kubernetes/kubernetes, vercel/next.js
+            Examples:
+            <br />• facebook/react
+            <br />• https://github.com/kubernetes/kubernetes
+            <br />• git@github.com:vercel/next.js.git
           </p>
         </div>
+
+        {error && (
+          <div
+            style={{
+              marginBottom: '16px',
+              padding: '12px',
+              backgroundColor: '#ffebee',
+              border: '1px solid #f48fb1',
+              borderRadius: '6px',
+              color: '#c2185b',
+              fontSize: '13px',
+            }}
+          >
+            {error}
+          </div>
+        )}
 
         {repos.map((repo, index) => (
           <div
@@ -85,7 +118,7 @@ export default function HomePage() {
           >
             <input
               type='text'
-              placeholder='owner/repo (e.g., facebook/react)'
+              placeholder='owner/repo or GitHub URL'
               value={repo}
               onChange={(e) => handleRepoChange(index, e.target.value)}
               style={{

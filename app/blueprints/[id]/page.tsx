@@ -98,7 +98,9 @@ export default function BlueprintChatPage() {
         ...newMessages,
         { role: 'assistant', content: `Error: ${errorMessage}` },
       ])
-      console.error('Error:', error)
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Error:', error)
+      }
     } finally {
       setLoading(false)
     }
@@ -377,6 +379,17 @@ export default function BlueprintChatPage() {
               >
                 ↓ Save Response
               </button>
+              <p
+                style={{
+                  fontSize: '11px',
+                  color: '#666',
+                  marginTop: '8px',
+                  margin: '8px 0 0 0',
+                  textAlign: 'center',
+                }}
+              >
+                Saves the latest response to a markdown file
+              </p>
             </div>
           )}
         </div>

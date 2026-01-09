@@ -14,17 +14,16 @@
   "description": "",
   "dependencies": {
     "@ai-sdk/mistral": "^3.0.5",
-    "@ai-sdk/openai": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "ai": "latest",
+    "@types/node": "^20.16.0",
+    "@types/react": "^19.0.0",
+    "ai": "^6.0.23",
     "mermaid": "^11.12.2",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "typescript": "latest",
-    "zod": "latest"
+    "typescript": "^5.9.3",
+    "zod": "^4.3.5"
   }
 }

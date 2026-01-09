@@ -1,10 +1,11 @@
 import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { mistral } from "@ai-sdk/mistral";
 import { z } from "zod";
 
 import { getOrCreateBlueprint, saveBlueprint } from "@/lib/blueprintsStore";
 import GitHubAPIClient from "@/lib/githubAPI";
+import type { RequestBody } from "@/lib/types";
+import { validateEnvironment } from "@/lib/env";
 
 const MermaidBlockRegex = /```mermaid\s*([\s\S]*?)```/i;
 
@@ -14,7 +15,20 @@ const isRepoAllowed = (allowed: Set<string>, owner: string, repo: string) =>
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   
-  const body = (await req.json()) as { messages?: Array<{ role: "user" | "assistant"; content: string }>; repos?: string[] };
+  // Validate required environment variables
+  try {
+    validateEnvironment();
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: 'Server configuration error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+  
+  const body = (await req.json()) as RequestBody;
   const incomingMessages: Array<{ role: "user" | "assistant"; content: string }> =
     body?.messages ?? [];
   const incomingRepos: string[] = body?.repos ?? [];
@@ -29,8 +43,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   
   const allowedRepos = new Set(bp.repos);
 
-  // Update stored chat history (demo: keep last ~30)
-  bp.messages = [...bp.messages, ...incomingMessages].slice(-30);
+  // Update stored chat history (keep last ~60)
+  bp.messages = [...bp.messages, ...incomingMessages].slice(-60);
 
   if (!process.env.GITHUB_TOKEN) {
     return new Response("Missing GITHUB_TOKEN", { status: 500 });
@@ -40,6 +54,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const github = new GitHubAPIClient(process.env.GITHUB_TOKEN);
 
   // 3) Guarded tool wrappers
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tools: Record<string, any> = {};
 
   tools.readRepoFile = {
@@ -218,161 +233,15 @@ How to answer well:
 Remember: This is a conversation, not just document generation. Be helpful, curious, and engaging!
 `;
 
-  // Demo mode: return mock response for testing without API
-  if (process.env.DEMO_MODE === "true") {
-    const demoResponse = `## Architecture Analysis
-
-I've analyzed the repositories in scope and generated a modern microservices architecture diagram:
-
-\`\`\`mermaid
-graph TB
-    subgraph Client Layer
-        Web["🌐 Web Client"]
-        Mobile["📱 Mobile App"]
-    end
-    
-    subgraph API Layer
-        LB["⚖️ Load Balancer"]
-        API["🔌 API Gateway"]
-    end
-    
-    subgraph Service Layer
-        Auth["🔐 Auth Service"]
-        Core["⚙️ Core Business Logic"]
-        Search["🔍 Search Service"]
-    end
-    
-    subgraph Data Layer
-        DB[(🗄️ PostgreSQL)]
-        Cache["⚡ Redis Cache"]
-        ES["🔎 Elasticsearch"]
-    end
-    
-    subgraph Async Processing
-        Queue["📨 Message Queue<br/>Kafka"]
-        Worker["👷 Worker Services"]
-    end
-    
-    subgraph Infrastructure
-        K8s["☸️ Kubernetes"]
-        Monitor["📊 Prometheus"]
-        Logs["📝 ELK Stack"]
-    end
-    
-    Web -->|HTTPS| LB
-    Mobile -->|HTTPS| LB
-    LB -->|Routes| API
-    API -->|Authenticate| Auth
-    API -->|Routes| Core
-    API -->|Routes| Search
-    
-    Auth -->|Verify| DB
-    Core -->|Read/Write| DB
-    Core -->|Cache| Cache
-    Search -->|Index| ES
-    
-    Core -->|Publish Events| Queue
-    Search -->|Publish Events| Queue
-    Queue -->|Consume| Worker
-    Worker -->|Update DB| DB
-    
-    K8s -.->|Orchestrates| API
-    K8s -.->|Orchestrates| Core
-    Monitor -.->|Metrics| API
-    Logs -.->|Logs| API
-
-    style Web fill:#e1f5ff
-    style Mobile fill:#e1f5ff
-    style API fill:#fff3e0
-    style LB fill:#fff3e0
-    style Auth fill:#f3e5f5
-    style Core fill:#f3e5f5
-    style Search fill:#f3e5f5
-    style DB fill:#e8f5e9
-    style Cache fill:#e8f5e9
-    style ES fill:#e8f5e9
-    style Queue fill:#fce4ec
-    style Worker fill:#fce4ec
-    style K8s fill:#f1f8e9
-    style Monitor fill:#f1f8e9
-    style Logs fill:#f1f8e9
-\`\`\`
-
-### Key Components
-
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **API Gateway** | Next.js / Node.js | Routes requests, handles authentication |
-| **Auth Service** | Node.js | JWT validation, OAuth integration |
-| **Core Services** | Node.js + gRPC | Business logic, computation |
-| **Database** | PostgreSQL | Persistent data storage |
-| **Cache Layer** | Redis | Performance optimization |
-| **Search** | Elasticsearch | Full-text search capability |
-| **Message Queue** | Kafka | Async event processing |
-| **Orchestration** | Kubernetes | Container orchestration, scaling |
-| **Monitoring** | Prometheus + Grafana | Performance monitoring |
-
-### Data Flow
-
-1. **Synchronous**: Web/Mobile → Load Balancer → API Gateway → Services → Database
-2. **Asynchronous**: Services → Kafka → Workers → Database
-3. **Caching**: Services use Redis for frequently accessed data
-4. **Search**: Elasticsearch indexes data for fast retrieval
-
-### Infrastructure
-
-- **Container Platform**: Docker
-- **Orchestration**: Kubernetes (kubectl, helm)
-- **IaC**: Terraform for infrastructure management
-- **Monitoring**: Prometheus + Grafana
-- **Distributed Consensus**: etcd (Kubernetes backend)
-- **RPC Communication**: gRPC between services
-
----
-
-**Evidence used:**
-- \`vercel/next.js\` - Modern web framework
-- \`nodejs/node\` - Runtime for services
-- \`kubernetes/kubernetes\` - Container orchestration
-- \`prometheus/prometheus\` - Metrics and monitoring
-- \`elastic/elasticsearch\` - Search and analytics
-- \`hashicorp/terraform\` - Infrastructure as code
-- \`docker/cli\` - Containerization
-- \`etcd-io/etcd\` - Distributed coordination
-- \`grpc/grpc\` - Service communication
-- \`apache/kafka\` - Message streaming
-
-**Note:** This is a demo response showing typical patterns. For analysis of specific repositories, add a valid OpenAI API key and set \`DEMO_MODE=false\` in \`.env.local\`.`;
-
-    // Save to blueprint
-    const match = demoResponse.match(MermaidBlockRegex);
-    if (match?.[1]) {
-      bp.diagramMermaid = match[1].trim();
-    }
-    bp.messages.push({ role: "assistant", content: demoResponse });
-    bp.messages = bp.messages.slice(-60);
-    saveBlueprint(bp);
-
-    // Return as stream
-    return new Response(demoResponse, {
-      headers: { "Content-Type": "text/event-stream" },
-    });
-  }
-
   // 5) Stream result
   try {
-    // Use Mistral (free) by default, fall back to OpenAI if configured
-    const useMistral = process.env.USE_MISTRAL !== "false";
-    const model = useMistral
-      ? mistral(process.env.MISTRAL_MODEL ?? "mistral-large-latest")
-      : openai(process.env.OPENAI_MODEL ?? "gpt-4-mini");
+    // Use Mistral for all requests
+    const model = mistral(process.env.MISTRAL_MODEL ?? "mistral-large-latest");
 
-    // For Mistral, disable tools due to API incompatibility
-    // Just use the model with the system prompt
+    // Stream the text response
     const result = streamText({
       model,
       messages: bp.messages,
-      ...(useMistral ? {} : { tools }), // Only use tools with OpenAI
       system,
       // When the model finishes, capture the Mermaid for persistence
       async onFinish({ text }: { text: string }) {
@@ -382,11 +251,13 @@ graph TB
           // store the assistant message too
           bp.messages.push({ role: "assistant", content: text });
           bp.messages = bp.messages.slice(-60);
+          // Save the latest response to blueprint storage
           saveBlueprint(bp);
         } else {
           // still store assistant message even if no mermaid found
           bp.messages.push({ role: "assistant", content: text });
           bp.messages = bp.messages.slice(-60);
+          // Save the latest response to blueprint storage
           saveBlueprint(bp);
         }
       },
@@ -395,7 +266,9 @@ graph TB
     // Return text stream using correct Vercel AI SDK method
     return result.toTextStreamResponse();
   } catch (error: any) {
-    console.error("Chat API error:", error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error("Chat API error:", error);
+    }
     return new Response(
       JSON.stringify({
         error: error.message || "Failed to generate response",

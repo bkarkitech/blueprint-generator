@@ -8,9 +8,23 @@ A conversational AI chat interface for exploring and discussing GitHub repositor
 - **Real-time Streaming**: See responses as they're generated word-by-word
 - **Dynamic Repo Selection**: Add or change repositories mid-conversation via sidebar
 - **GitHub API Integration**: Access repository content directly
-- **Free LLM Support**: Powered by Mistral AI (free tier) with OpenAI fallback
+- **Free LLM Support**: Powered by Mistral AI
 - **Optional Diagrams**: Generate Mermaid diagrams when helpful (not forced)
 - **Persistent Chat**: Messages stored in-memory per blueprint
+
+## ⚠️ Important Notes
+
+### Storage
+- Chat messages and blueprints are stored **in-memory only** (lost on server restart)
+- For production use, implement persistent storage (database)
+- See "Future Improvements" section below
+
+### Environment Variables
+All required environment variables must be configured at startup:
+- `GITHUB_TOKEN` - **Required** for GitHub API access
+- `MISTRAL_API_KEY` - **Required** for AI responses
+
+The app will fail to start if `GITHUB_TOKEN` is missing.
 
 ## Setup
 
@@ -33,10 +47,6 @@ GITHUB_TOKEN="ghp_xxxxxxxxxxxxx"
 # Mistral API Key (FREE - recommended!)
 # Get from: https://console.mistral.ai/api-keys/
 MISTRAL_API_KEY="your-key-here"
-USE_MISTRAL="true"
-
-# OpenAI API Key (optional - paid alternative)
-OPENAI_API_KEY="sk-..."
 ```
 
 ### 3. Run Development Server
@@ -70,7 +80,7 @@ On the home page, enter one or more GitHub repositories (e.g., `vercel/next.js`,
 
 - **`app/page.tsx`**: Home page with repo input UI
 - **`app/blueprints/[id]/page.tsx`**: Chat interface with real-time streaming and sidebar repo management
-- **`app/api/blueprints/[id]/chat/route.ts`**: Chat API endpoint with Mistral/OpenAI integration
+- **`app/api/blueprints/[id]/chat/route.ts`**: Chat API endpoint with Mistral AI integration
 - **`lib/blueprintsStore.ts`**: Blueprint state management
 - **`lib/githubAPI.ts`**: GitHub REST API client wrapper
 
@@ -93,17 +103,38 @@ On the home page, enter one or more GitHub repositories (e.g., `vercel/next.js`,
 ## LLM Models
 
 - **Mistral AI** (default, free): `mistral-large-latest` - Fast and capable
-- **OpenAI** (fallback, paid): `gpt-4-mini` - For production use
 
-Both models use conversational system prompts that encourage natural dialogue and optional diagram generation.
+The model uses conversational system prompts that encourage natural dialogue and optional diagram generation.
 
 ## Future Improvements
 
-- [ ] Persist to real database (chat history, blueprints)
-- [ ] User authentication
-- [ ] Rate limiting
+- [ ] Persist to real database (chat history, blueprints) - **Required for production**
+- [ ] User authentication and multi-user support
+- [ ] Rate limiting and usage quotas
 - [ ] Diagram diff viewer
 - [ ] Export chat as markdown or PDF
+- [ ] Support for private repositories with custom tokens
+- [ ] Caching layer for frequently accessed repos
+
+## Production Deployment
+
+### Before deploying to production:
+
+1. **Implement persistent storage**: Replace in-memory `blueprintsStore` with a database
+2. **Add user authentication**: Protect endpoints and tie blueprints to users
+3. **Configure environment**: Ensure all required env vars are set via CI/CD secrets
+4. **Enable HTTPS**: All API calls should use HTTPS in production
+5. **Add rate limiting**: Prevent abuse of GitHub and LLM APIs
+6. **Monitor errors**: Set up error tracking (Sentry, LogRocket, etc.)
+7. **Set up logging**: Configure structured logging for debugging
+
+### Security headers
+Security headers are automatically added by Next.js config:
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
+- Referrer-Policy: strict-origin-when-cross-origin
+- Permissions-Policy: Restricts camera, microphone, geolocation
 
 ## License
 

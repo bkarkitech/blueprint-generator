@@ -19,16 +19,7 @@ export const getOrCreateBlueprint = (id: string, initialRepos?: string[]) => {
 
   const bp: Blueprint = {
     id,
-    repos: initialRepos && initialRepos.length > 0 
-      ? initialRepos 
-      : [
-          // Demo scope: Default repos if none provided
-          "vercel/next.js",
-          "nodejs/node",
-          "kubernetes/kubernetes",
-          "prometheus/prometheus",
-          "elastic/elasticsearch",
-        ],
+    repos: initialRepos && initialRepos.length > 0 ? initialRepos : [],
     diagramMermaid: null,
     provenance: [],
     messages: [],
