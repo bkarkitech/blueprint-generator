@@ -13,27 +13,22 @@ export type Blueprint = {
 
 const store = new Map<string, Blueprint>();
 
-export const getOrCreateBlueprint = (id: string) => {
+export const getOrCreateBlueprint = (id: string, initialRepos?: string[]) => {
   const existing = store.get(id);
   if (existing) return existing;
 
-  // Demo scope: Public example repos for testing
-  // Replace with your own repos when ready
   const bp: Blueprint = {
     id,
-    repos: [
-      // Popular backend services
-      "vercel/next.js",           // Web framework
-      "nodejs/node",              // Runtime
-      "kubernetes/kubernetes",    // Orchestration
-      "prometheus/prometheus",    // Monitoring
-      "elastic/elasticsearch",    // Search/analytics
-      "hashicorp/terraform",      // Infrastructure as code
-      "docker/cli",               // Container platform
-      "etcd-io/etcd",             // Distributed consensus
-      "grpc/grpc",                // RPC framework
-      "apache/kafka",             // Message broker
-    ],
+    repos: initialRepos && initialRepos.length > 0 
+      ? initialRepos 
+      : [
+          // Demo scope: Default repos if none provided
+          "vercel/next.js",
+          "nodejs/node",
+          "kubernetes/kubernetes",
+          "prometheus/prometheus",
+          "elastic/elasticsearch",
+        ],
     diagramMermaid: null,
     provenance: [],
     messages: [],

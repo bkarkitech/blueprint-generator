@@ -13,17 +13,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@ai-sdk/openai": "^0.0.57",
-    "@assistant-ui/react": "^0.8.20",
-    "@assistant-ui/react-ai-sdk": "^0.5.11",
-    "@modelcontextprotocol/sdk": "^0.15.0",
-    "@types/node": "^25.0.3",
-    "@types/react": "^19.2.7",
-    "ai": "^4.1.22",
-    "next": "^16.1.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "typescript": "^5.9.3",
-    "zod": "^3.23.8"
+    "@ai-sdk/mistral": "^3.0.5",
+    "@ai-sdk/openai": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "ai": "latest",
+    "mermaid": "^11.12.2",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "typescript": "latest",
+    "zod": "latest"
   }
 }
