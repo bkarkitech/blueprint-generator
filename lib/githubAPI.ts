@@ -36,7 +36,9 @@ class GitHubAPIClient {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
       "Authorization": `token ${this.token}`,
-      "Accept": "application/vnd.github.v3+json",
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "Content-Type": "application/json",
       ...options.headers,
     };
 
@@ -46,8 +48,15 @@ class GitHubAPIClient {
     });
 
     if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`GitHub API error details:`, {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorBody,
+        endpoint,
+      });
       throw new Error(
-        `GitHub API error ${response.status}: ${response.statusText}`
+        `GitHub API error ${response.status}: ${response.statusText} - ${errorBody}`
       );
     }
 
@@ -166,6 +175,65 @@ class GitHubAPIClient {
       } catch {
         return null;
       }
+    }
+  }
+
+  /**
+   * Create or update a file in a repo
+   */
+  async writeFile(
+    owner: string,
+    repo: string,
+    path: string,
+    content: string,
+    message: string,
+    branch: string = "main"
+  ): Promise<{ sha: string; path: string }> {
+    // Encode content to base64
+    const encodedContent = Buffer.from(content).toString("base64");
+
+    try {
+      // Try to get existing file to update it
+      const existingFile = (await this.request(
+        `/repos/${owner}/${repo}/contents/${path}?ref=${branch}`
+      )) as Record<string, unknown>;
+
+      // File exists, update it
+      const response = (await this.request(
+        `/repos/${owner}/${repo}/contents/${path}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            message,
+            content: encodedContent,
+            sha: existingFile.sha,
+            branch,
+          }),
+        }
+      )) as Record<string, unknown>;
+
+      return {
+        sha: (response.content as Record<string, string>).sha,
+        path: (response.content as Record<string, string>).path,
+      };
+    } catch {
+      // File doesn't exist, create it
+      const response = (await this.request(
+        `/repos/${owner}/${repo}/contents/${path}`,
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            message,
+            content: encodedContent,
+            branch,
+          }),
+        }
+      )) as Record<string, unknown>;
+
+      return {
+        sha: (response.content as Record<string, string>).sha,
+        path: (response.content as Record<string, string>).path,
+      };
     }
   }
 }

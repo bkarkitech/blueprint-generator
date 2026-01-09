@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import MermaidDiagram from '@/components/MermaidDiagram'
+import SaveToRepoForm from '@/components/SaveToRepoForm'
 import Link from 'next/link'
 
 export default function BlueprintChatPage() {
@@ -24,6 +25,11 @@ export default function BlueprintChatPage() {
   const [error, setError] = useState<string>('')
   const [showDownloadNotification, setShowDownloadNotification] =
     useState(false)
+  const [showSaveToRepoForm, setShowSaveToRepoForm] = useState(false)
+  const [notification, setNotification] = useState<{
+    message: string
+    type: 'success' | 'error'
+  } | null>(null)
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -166,11 +172,30 @@ export default function BlueprintChatPage() {
     setTimeout(() => setShowDownloadNotification(false), 3000)
   }
 
+  const handleShowSaveToRepoForm = () => {
+    if (messages.length === 0) {
+      setNotification({ message: 'No conversation to save', type: 'error' })
+      setTimeout(() => setNotification(null), 3000)
+      return
+    }
+    setShowSaveToRepoForm(true)
+  }
+
+  const handleSaveToRepoSuccess = (message: string) => {
+    setNotification({ message, type: 'success' })
+    setTimeout(() => setNotification(null), 5000)
+  }
+
+  const handleSaveToRepoError = (message: string) => {
+    setNotification({ message, type: 'error' })
+    setTimeout(() => setNotification(null), 5000)
+  }
+
   return (
     <div
       style={{ display: 'flex', height: '100vh', backgroundColor: '#f5f5f5' }}
     >
-      {/* Notification */}
+      {/* Notifications */}
       {showDownloadNotification && (
         <div
           style={{
@@ -190,6 +215,35 @@ export default function BlueprintChatPage() {
         >
           ✓ Downloaded latest response as markdown
         </div>
+      )}
+      {notification && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor:
+              notification.type === 'success' ? '#4CAF50' : '#f44336',
+            color: '#fff',
+            padding: '14px 20px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 500,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            zIndex: 1000,
+            animation: 'fadeIn 0.3s ease-in',
+          }}
+        >
+          {notification.type === 'success' ? '✓' : '✗'} {notification.message}
+        </div>
+      )}
+      {showSaveToRepoForm && (
+        <SaveToRepoForm
+          blueprintId={blueprintId}
+          onClose={() => setShowSaveToRepoForm(false)}
+          onSuccess={handleSaveToRepoSuccess}
+          onError={handleSaveToRepoError}
+        />
       )}
       {/* Sidebar */}
       <div
@@ -377,7 +431,34 @@ export default function BlueprintChatPage() {
                     : 'Saves the latest response as markdown'
                 }
               >
-                ↓ Save Response
+                ⬇ Save Response
+              </button>
+              <button
+                onClick={handleShowSaveToRepoForm}
+                disabled={loading || messages.length === 0}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  marginTop: '8px',
+                  backgroundColor:
+                    loading || messages.length === 0 ? '#ccc' : '#FF9800',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor:
+                    loading || messages.length === 0
+                      ? 'not-allowed'
+                      : 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                }}
+                title={
+                  loading
+                    ? 'Waiting for response...'
+                    : 'Push the latest response to a GitHub repository'
+                }
+              >
+                ⬆ Save to GitHub
               </button>
               <p
                 style={{
@@ -388,7 +469,19 @@ export default function BlueprintChatPage() {
                   textAlign: 'center',
                 }}
               >
-                Saves the latest response to a markdown file
+                Download locally or push to GitHub repo
+              </p>
+              <p
+                style={{
+                  fontSize: '10px',
+                  color: '#999',
+                  marginTop: '4px',
+                  margin: '4px 0 0 0',
+                  textAlign: 'center',
+                  fontStyle: 'italic',
+                }}
+              >
+                (saves the latest response only)
               </p>
             </div>
           )}
