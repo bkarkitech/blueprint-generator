@@ -34,3 +34,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+.env.local
+*.log
+.next/dev/logs/next-development.log
