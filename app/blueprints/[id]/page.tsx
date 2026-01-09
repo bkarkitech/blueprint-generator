@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import MermaidDiagram from '@/components/MermaidDiagram'
@@ -10,7 +10,8 @@ import Link from 'next/link'
 export default function BlueprintChatPage() {
   const params = useParams<{ id: string }>()
   const searchParams = useSearchParams()
-  const blueprintId = params.id
+  const blueprintId = typeof params.id === 'string' ? params.id : ''
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [repos, setRepos] = useState<string[]>([])
   const [messages, setMessages] = useState<
@@ -20,6 +21,14 @@ export default function BlueprintChatPage() {
   const [loading, setLoading] = useState(false)
   const [showRepoEditor, setShowRepoEditor] = useState(false)
   const [editingRepos, setEditingRepos] = useState<string[]>([])
+  const [error, setError] = useState<string>('')
+  const [showDownloadNotification, setShowDownloadNotification] =
+    useState(false)
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+  }, [messages])
 
   useEffect(() => {
     const reposParam = searchParams.get('repos')
@@ -52,7 +61,7 @@ export default function BlueprintChatPage() {
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
+        const errorData = (await response.json()) as { error?: string }
         throw new Error(errorData.error || 'API error')
       }
 
@@ -98,9 +107,10 @@ export default function BlueprintChatPage() {
   const handleUpdateRepos = () => {
     const validRepos = editingRepos.filter((r) => r.trim())
     if (validRepos.length === 0) {
-      alert('Please enter at least one repository')
+      setError('Please enter at least one repository')
       return
     }
+    setError('')
     setRepos(validRepos)
     setShowRepoEditor(false)
     setMessages([])
@@ -120,10 +130,65 @@ export default function BlueprintChatPage() {
     setEditingRepos(newRepos)
   }
 
+  const handleDownloadMarkdown = () => {
+    if (messages.length === 0) return
+
+    // Get the last assistant message (the latest response)
+    const lastAssistantMessage = [...messages]
+      .reverse()
+      .find((msg) => msg.role === 'assistant')
+
+    if (!lastAssistantMessage) return
+
+    // Build markdown content with only the latest response
+    let markdownContent = `# Blueprint: ${blueprintId}\n\n`
+    markdownContent += `**Repositories analyzed:** ${repos.join(', ')}\n\n`
+    markdownContent += `---\n\n`
+    markdownContent += `## Response\n\n${lastAssistantMessage.content}\n\n`
+
+    // Create blob and download
+    const blob = new Blob([markdownContent], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `blueprint-${blueprintId}-${
+      new Date().toISOString().split('T')[0]
+    }.md`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    // Show notification
+    setShowDownloadNotification(true)
+    setTimeout(() => setShowDownloadNotification(false), 3000)
+  }
+
   return (
     <div
       style={{ display: 'flex', height: '100vh', backgroundColor: '#f5f5f5' }}
     >
+      {/* Notification */}
+      {showDownloadNotification && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#4CAF50',
+            color: '#fff',
+            padding: '14px 20px',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 500,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            zIndex: 1000,
+            animation: 'fadeIn 0.3s ease-in',
+          }}
+        >
+          ✓ Downloaded latest response as markdown
+        </div>
+      )}
       {/* Sidebar */}
       <div
         style={{
@@ -185,7 +250,10 @@ export default function BlueprintChatPage() {
                     type='text'
                     value={repo}
                     onChange={(e) =>
-                      handleEditRepoChange(index, e.target.value)
+                      handleEditRepoChange(
+                        index,
+                        (e.target as HTMLInputElement).value
+                      )
                     }
                     placeholder='owner/repo'
                     style={{
@@ -282,6 +350,33 @@ export default function BlueprintChatPage() {
                   </div>
                 ))
               )}
+              <button
+                onClick={handleDownloadMarkdown}
+                disabled={loading || messages.length === 0}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  marginTop: '12px',
+                  backgroundColor:
+                    loading || messages.length === 0 ? '#ccc' : '#2196F3',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor:
+                    loading || messages.length === 0
+                      ? 'not-allowed'
+                      : 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                }}
+                title={
+                  loading
+                    ? 'Waiting for response...'
+                    : 'Saves the latest response as markdown'
+                }
+              >
+                ↓ Save Response
+              </button>
             </div>
           )}
         </div>
@@ -316,6 +411,7 @@ export default function BlueprintChatPage() {
             display: 'flex',
             flexDirection: 'column',
             gap: '12px',
+            transition: 'none',
           }}
         >
           {messages.length === 0 ? (
@@ -345,11 +441,13 @@ export default function BlueprintChatPage() {
                   display: 'flex',
                   justifyContent:
                     msg.role === 'user' ? 'flex-end' : 'flex-start',
+                  marginLeft: msg.role === 'user' ? 'auto' : '0',
+                  transition: 'none',
                 }}
               >
                 <div
                   style={{
-                    maxWidth: '85%',
+                    maxWidth: msg.role === 'user' ? '70%' : '100%',
                     padding: '12px 16px',
                     borderRadius: '8px',
                     backgroundColor: msg.role === 'user' ? '#2196F3' : '#fff',
@@ -359,6 +457,7 @@ export default function BlueprintChatPage() {
                     fontSize: '14px',
                     lineHeight: '1.6',
                     overflow: 'auto',
+                    transition: 'none',
                   }}
                 >
                   {msg.role === 'assistant' ? (
@@ -415,21 +514,22 @@ export default function BlueprintChatPage() {
                         ),
                         code: ({
                           node,
-                          inline,
                           className,
                           children,
                           ...props
-                        }) => {
+                        }: any) => {
                           const match = /language-(\w+)/.exec(className || '')
                           const language = match ? match[1] : ''
+                          const isInline = !className
                           if (language === 'mermaid') {
                             return (
                               <MermaidDiagram
                                 chart={String(children).replace(/\n$/, '')}
+                                isComplete={!loading}
                               />
                             )
                           }
-                          return inline ? (
+                          return isInline ? (
                             <code
                               style={{
                                 backgroundColor: 'rgba(0,0,0,0.1)',
@@ -538,6 +638,7 @@ export default function BlueprintChatPage() {
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         <div
@@ -552,42 +653,48 @@ export default function BlueprintChatPage() {
               Add repositories from the left panel to start chatting
             </p>
           ) : (
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type='text'
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) =>
-                  e.key === 'Enter' && !loading && handleSend()
-                }
-                placeholder='Ask me anything about these repositories...'
-                disabled={loading}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  fontFamily: 'inherit',
-                  outline: 'none',
-                }}
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: loading ? '#ccc' : '#2196F3',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  fontWeight: 500,
-                }}
-              >
-                {loading ? 'Sending...' : 'Send'}
-              </button>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            >
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <input
+                  type='text'
+                  value={input}
+                  onChange={(e) =>
+                    setInput((e.target as HTMLInputElement).value)
+                  }
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' && !loading && handleSend()
+                  }
+                  placeholder='Ask me anything about these repositories...'
+                  disabled={loading}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                  }}
+                />
+                <button
+                  onClick={handleSend}
+                  disabled={loading}
+                  style={{
+                    padding: '12px 24px',
+                    backgroundColor: loading ? '#ccc' : '#2196F3',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                  }}
+                >
+                  {loading ? 'Sending...' : 'Send'}
+                </button>
+              </div>
             </div>
           )}
         </div>
