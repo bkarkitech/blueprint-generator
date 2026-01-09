@@ -1,15 +1,16 @@
 # Blueprint Generator
 
-A stateful chat interface for generating and refining architecture diagrams using GitHub MCP (Model Context Protocol) integration with LLMs.
+A conversational AI chat interface for exploring and discussing GitHub repositories. Analyze code architecture, ask questions, and generate diagrams through natural dialogue.
 
 ## Features
 
-- **Stateful Chat**: Continuously refine Mermaid architecture diagrams through conversation
-- **GitHub API Integration**: Access repository content (files, tree listings, code search)
-- **No MCP Required**: Works with standard GitHub REST API + OpenAI
-- **Guarded Tool Access**: Only access allowed repositories within Blueprint scope
-- **Provenance Tracking**: Keep track of which files were read and when
-- **Persistent State**: Blueprint diagrams, messages, and metadata are stored in-memory (can be swapped to DB)
+- **Conversational UI**: Natural back-and-forth dialogue like ChatGPT
+- **Real-time Streaming**: See responses as they're generated word-by-word
+- **Dynamic Repo Selection**: Add or change repositories mid-conversation via sidebar
+- **GitHub API Integration**: Access repository content directly
+- **Free LLM Support**: Powered by Mistral AI (free tier) with OpenAI fallback
+- **Optional Diagrams**: Generate Mermaid diagrams when helpful (not forced)
+- **Persistent Chat**: Messages stored in-memory per blueprint
 
 ## Setup
 
@@ -21,13 +22,7 @@ npm install
 
 ### 2. Configure Environment Variables
 
-Copy the example env file and fill in your credentials:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local`:
+Create `.env.local` with:
 
 ```bash
 # GitHub Personal Access Token (classic)
@@ -35,29 +30,16 @@ Edit `.env.local`:
 # Scopes: repo, read:user, read:org
 GITHUB_TOKEN="ghp_xxxxxxxxxxxxx"
 
-# OpenAI API Key
+# Mistral API Key (FREE - recommended!)
+# Get from: https://console.mistral.ai/api-keys/
+MISTRAL_API_KEY="your-key-here"
+USE_MISTRAL="true"
+
+# OpenAI API Key (optional - paid alternative)
 OPENAI_API_KEY="sk-..."
-OPENAI_MODEL="gpt-4-mini"
 ```
 
-> **Note**: You'll need a GitHub PAT (Personal Access Token) and OpenAI API key. No GitHub MCP server needed!
-
-### 3. Update Repository Scope (Optional)
-
-The default demo uses popular open source repos (vercel/next.js, kubernetes/kubernetes, nodejs/node, etc) so you can test immediately.
-
-When ready, edit `lib/blueprintsStore.ts` to use your own repositories:
-
-```typescript
-repos: [
-  "your-org/service-a",
-  "your-org/service-b",
-  "your-org/web-frontend",
-  // ... add your repos here
-]
-```
-
-### 4. Run Development Server
+### 3. Run Development Server
 
 ```bash
 npm run dev
@@ -65,41 +47,32 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 4. Input Repositories
+
+On the home page, enter one or more GitHub repositories (e.g., `vercel/next.js`, `facebook/react`), or use quick-start templates. The chat page will open with those repos ready for analysis.
+
 ## Usage
 
-1. Navigate to `/blueprints/demo` (or any blueprint ID)
-2. Start with a prompt like: **"Show me the architecture of these projects"**
-3. The LLM will:
-   - Use GitHub API to read README files and architecture docs
-   - Search for interesting keywords and patterns
-   - Generate a Mermaid diagram based on evidence
-   - Output "Evidence used" section showing which files were consulted
-4. Continue the conversation:
-   - "Group by category (infrastructure, application, monitoring)"
-   - "What languages are used?"
-   - "Add deployment patterns"
-
-The model can verify details by reading files before updating the diagram.
+1. Go to home page and enter repository names (e.g., `vercel/next.js`, `facebook/react`)
+2. Click "Start Chat" or use a quick-start template
+3. Ask natural questions:
+   - "What's the architecture of this project?"
+   - "What dependencies does it use?"
+   - "Draw a diagram of the main components"
+   - "What language is this written in?"
+4. Edit repositories mid-conversation using the sidebar (Edit/Done toggle)
+5. Responses stream in real-time as they're generated
+6. AI generates diagrams when relevant—diagrams are optional, not forced
 
 ## Architecture
 
-### Backend Components
+### Key Files
 
+- **`app/page.tsx`**: Home page with repo input UI
+- **`app/blueprints/[id]/page.tsx`**: Chat interface with real-time streaming and sidebar repo management
+- **`app/api/blueprints/[id]/chat/route.ts`**: Chat API endpoint with Mistral/OpenAI integration
+- **`lib/blueprintsStore.ts`**: Blueprint state management
 - **`lib/githubAPI.ts`**: GitHub REST API client wrapper
-  - Direct calls to GitHub REST API (no MCP)
-  - Methods: readFile, listTree, searchCode, getRepo, getReadme
-- **`lib/blueprintsStore.ts`**: In-memory Blueprint storage (demo)
-  - Stores: repos, diagram, messages, provenance
-- **`app/api/blueprints/[id]/chat/route.ts`**: Chat API endpoint
-  - Manages guarded tool access (readRepoFile, listRepoTree, searchRepo)
-  - Extracts and persists Mermaid diagrams
-  - Tracks provenance of file reads
-
-### Frontend Components
-
-- **`app/blueprints/[id]/page.tsx`**: Chat UI
-  - Uses `@assistant-ui/react` for UI
-  - Integrates with OpenAI via `@ai-sdk/openai`
 
 ## API Endpoint
 
@@ -109,38 +82,28 @@ The model can verify details by reading files before updating the diagram.
 ```json
 {
   "messages": [
-    { "role": "user", "content": "Generate diagram" }
-  ]
+    { "role": "user", "content": "What's the architecture?" }
+  ],
+  "repos": ["owner/repo"]
 }
 ```
 
-**Response**: Streaming response with chat completions and Mermaid diagrams
+**Response**: Streaming text response with optional Mermaid diagrams in code blocks
 
-## Tools Available to the LLM
+## LLM Models
 
-1. **readRepoFile**: Read individual files from allowed repos
-   - Parameters: `owner`, `repo`, `path`, `ref` (optional)
-   - Guarded: only within Blueprint scope
-   - Returns: file content as string
+- **Mistral AI** (default, free): `mistral-large-latest` - Fast and capable
+- **OpenAI** (fallback, paid): `gpt-4-mini` - For production use
 
-2. **listRepoTree**: List files/folders in a repo
-   - Parameters: `owner`, `repo`, `path` (optional), `recursive` (optional)
-   - Guarded: only within Blueprint scope
-   - Returns: list of files with type and size info
-
-3. **searchRepo**: Search for keywords in a repo
-   - Parameters: `owner`, `repo`, `query`
-   - Guarded: only within Blueprint scope
-   - Returns: matching file paths (GitHub REST API search)
+Both models use conversational system prompts that encourage natural dialogue and optional diagram generation.
 
 ## Future Improvements
 
-- [ ] Persist to real database (versioned diagrams, attestations)
-- [ ] Add diff viewer for old vs new diagrams
-- [ ] Rate limiting and tenant authentication
-- [ ] Attestation snapshots: `POST /api/blueprints/:id/attest`
-- [ ] Context pack phase for better diagram quality
-- [ ] Support for more MCP providers (not just GitHub)
+- [ ] Persist to real database (chat history, blueprints)
+- [ ] User authentication
+- [ ] Rate limiting
+- [ ] Diagram diff viewer
+- [ ] Export chat as markdown or PDF
 
 ## License
 
