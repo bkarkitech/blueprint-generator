@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///Users/bkarki/Projects/blueprint-generator/app/page.tsx"],"sourcesContent":["import Link from 'next/link'\n\nexport default function HomePage() {\n  return (\n    <main style={{ padding: '2rem' }}>\n      <h1>Blueprint Generator</h1>\n      <p>Select a blueprint to get started:</p>\n      <ul>\n        <li>\n          <Link href='/blueprints/demo'>Demo Blueprint</Link>\n        </li>\n      </ul>\n    </main>\n  )\n}\n"],"names":[],"mappings":";;;;;AAAA;;;AAEe,SAAS;IACtB,qBACE,8OAAC;QAAK,OAAO;YAAE,SAAS;QAAO;;0BAC7B,8OAAC;0BAAG;;;;;;0BACJ,8OAAC;0BAAE;;;;;;0BACH,8OAAC;0BACC,cAAA,8OAAC;8BACC,cAAA,8OAAC,0LAAI;wBAAC,MAAK;kCAAmB;;;;;;;;;;;;;;;;;;;;;;AAKxC"}}]
+}

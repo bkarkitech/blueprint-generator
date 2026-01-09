@@ -1,0 +1,809 @@
+[00:00:01.612] Server  LOG     
+[00:00:01.612] Server  LOG       We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+[00:00:01.612] Server  LOG       The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+[00:00:01.612] Server  LOG       	- allowJs was set to true
+[00:00:01.612] Server  LOG       	- noEmit was set to true
+[00:00:01.613] Server  LOG       	- incremental was set to true
+[00:00:01.613] Server  LOG       	- include was set to ['next-env.d.ts', '.next/types/**/*.ts', '.next/dev/types/**/*.ts', '**/*.mts', '**/*.ts', '**/*.tsx']
+[00:00:01.613] Server  LOG       	- plugins was updated to add { name: 'next' }
+[00:00:01.613] Server  LOG       	- exclude was set to ['node_modules']
+[00:00:01.613] Server  LOG     
+[00:00:01.613] Server  LOG       The following mandatory changes were made to your tsconfig.json:
+
+[00:00:01.613] Server  LOG       	- esModuleInterop was set to true (requirement for SWC / babel)
+[00:00:01.613] Server  LOG       	- isolatedModules was set to true (requirement for SWC / Babel)
+[00:00:01.613] Server  LOG     
+[00:00:01.723] Server  LOG     ✓ Ready in 1490ms
+[00:16:26.325] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:16:28.918] Server  ERROR   ⨯ ./app/blueprints/[id]/page.tsx:4:1
+Module not found: Can't resolve '@assistant-ui/react'
+  2 |
+  3 | import { useParams } from 'next/navigation'
+> 4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:16:29.047] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.047] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.345] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.345] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.345] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.345] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.403] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.403] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.413] Server  ERROR   ⨯ ./app/blueprints/[id]/page.tsx:4:1
+Module not found: Can't resolve '@assistant-ui/react'
+  2 |
+  3 | import { useParams } from 'next/navigation'
+> 4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:16:29.549] Browser ERROR   uncaughtError: Error: ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[00:16:29.713] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.713] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.713] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:16:29.713] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:17:05.209] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[00:17:05.209] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:22.238] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:22.238] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:22.238] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:22.238] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:37.156] Server  LOG       Reload env: .env.local
+[01:51:37.197] Server  ERROR   ⨯ ./app/blueprints/[id]/page.tsx:4:1
+Module not found: Can't resolve '@assistant-ui/react'
+  2 |
+  3 | import { useParams } from 'next/navigation'
+> 4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:37.344] Browser ERROR   uncaughtError: Error: ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[01:51:38.235] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:38.235] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:38.235] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:51:38.235] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:52:43.237] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:52:43.237] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:52:43.237] Browser ERROR   ./app/blueprints/[id]/page.tsx:8:1
+Module not found: Can't resolve '@assistant-ui/react'
+   6 | // You can use assistant-ui's built-in components or your own.
+   7 | // This example keeps it minimal.
+>  8 | import { Thread } from '@assistant-ui/react'
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default function BlueprintChatPage() {
+  11 |   const params = useParams<{ id: string }>()
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[01:52:43.237] Browser ERROR   ./app/blueprints/[id]/page.tsx:5:1
+Module not found: Can't resolve '@assistant-ui/react-ai-sdk'
+  3 | import { useParams } from 'next/navigation'
+  4 | import { AssistantRuntimeProvider } from '@assistant-ui/react'
+> 5 | import { useChatRuntime } from '@assistant-ui/react-ai-sdk'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | // You can use assistant-ui's built-in components or your own.
+  7 | // This example keeps it minimal.
+  8 | import { Thread } from '@assistant-ui/react'
+
+Import traces:
+  Client Component Browser:
+    ./app/blueprints/[id]/page.tsx [Client Component Browser]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/blueprints/[id]/page.tsx [Client Component SSR]
+    ./app/blueprints/[id]/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
